@@ -1,26 +1,87 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+
+  --app-card: #ffffff;
+  --app-card-soft: #f8fafc;
+  --app-border: #e2e8f0;
+
+  --app-primary: #0f766e;
+  --app-primary-foreground: #ffffff;
+  --app-primary-soft: #ccfbf1;
+  --app-primary-muted: #99f6e4;
+}
+
+body[data-theme="CLARO"] {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --app-card: #ffffff;
+  --app-card-soft: #f8fafc;
+  --app-border: #e2e8f0;
+}
+
+body[data-theme="OSCURO"] {
+  --background: #0f172a;
+  --foreground: #e5e7eb;
+  --app-card: #111827;
+  --app-card-soft: #1f2937;
+  --app-border: #334155;
+}
+
+body[data-theme="SISTEMA"] {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --app-card: #ffffff;
+  --app-card-soft: #f8fafc;
+  --app-border: #e2e8f0;
+}
+
+@media (prefers-color-scheme: dark) {
+  body[data-theme="SISTEMA"] {
+    --background: #0f172a;
+    --foreground: #e5e7eb;
+    --app-card: #111827;
+    --app-card-soft: #1f2937;
+    --app-border: #334155;
+  }
+}
+
+body[data-accent="TEAL"] {
+  --app-primary: #0f766e;
+  --app-primary-soft: #ccfbf1;
+  --app-primary-muted: #99f6e4;
+}
+
+body[data-accent="SKY"] {
+  --app-primary: #0369a1;
+  --app-primary-soft: #e0f2fe;
+  --app-primary-muted: #bae6fd;
+}
+
+body[data-accent="INDIGO"] {
+  --app-primary: #4338ca;
+  --app-primary-soft: #e0e7ff;
+  --app-primary-muted: #c7d2fe;
+}
+
+body[data-accent="EMERALD"] {
+  --app-primary: #047857;
+  --app-primary-soft: #d1fae5;
+  --app-primary-muted: #a7f3d0;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-inter);
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
 }

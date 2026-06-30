@@ -1,0 +1,195 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String  @id @default(cuid())
+  name         String?
+  email        String  @unique
+  passwordHash String
+  activo       Boolean @default(true)
+
+  temaPreferido  AparienciaTema           @default(CLARO)
+  colorPrincipal AparienciaColorPrincipal @default(TEAL)
+
+  categorias     Categoria[]
+  cuentas        Cuenta[]
+  movimientos    Movimiento[]
+  notificaciones Notificacion[]
+  configuracion  ConfiguracionNotificacion?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Categoria {
+  id     String @id @default(cuid())
+  userId String
+
+  nombre String
+  tipo   TipoMovimiento
+  color  String?
+  icono  String?
+  activo Boolean        @default(true)
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movimientos Movimiento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, nombre, tipo])
+}
+
+model Cuenta {
+  id     String @id @default(cuid())
+  userId String
+
+  nombre       String
+  tipo         TipoCuenta
+  saldoInicial Decimal    @default(0) @db.Decimal(18, 2)
+  activo       Boolean    @default(true)
+
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  movimientos Movimiento[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, nombre])
+}
+
+model Movimiento {
+  id     String @id @default(cuid())
+  userId String
+
+  tipo        TipoMovimiento
+  descripcion String
+  monto       Decimal        @db.Decimal(18, 2)
+  fecha       DateTime
+
+  categoriaId String
+  cuentaId    String
+
+  tieneCuotas Boolean @default(false)
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoria Categoria @relation(fields: [categoriaId], references: [id])
+  cuenta    Cuenta    @relation(fields: [cuentaId], references: [id])
+
+  cuotas GastoCuota[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GastoCuota {
+  id           String @id @default(cuid())
+  movimientoId String
+
+  numeroCuota Int
+  totalCuotas Int
+  monto       Decimal @db.Decimal(18, 2)
+
+  fechaVencimiento DateTime
+  fechaPago        DateTime?
+
+  estado EstadoCuota @default(PENDIENTE)
+
+  movimiento Movimiento @relation(fields: [movimientoId], references: [id], onDelete: Cascade)
+
+  avisos         CuotaAviso[]
+  notificaciones Notificacion[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([movimientoId, numeroCuota])
+}
+
+model CuotaAviso {
+  id      String @id @default(cuid())
+  cuotaId String
+
+  diasAntes Int
+  enviado   Boolean   @default(false)
+  enviadoEn DateTime?
+
+  cuota GastoCuota @relation(fields: [cuotaId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([cuotaId, diasAntes])
+}
+
+model Notificacion {
+  id      String  @id @default(cuid())
+  userId  String
+  cuotaId String?
+
+  titulo  String
+  mensaje String
+  tipo    TipoNotificacion
+  leida   Boolean          @default(false)
+
+  user  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cuota GastoCuota? @relation(fields: [cuotaId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model ConfiguracionNotificacion {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  avisarPorCorreo Boolean @default(true)
+  diasAviso       Int[]   @default([2, 1, 0])
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TipoMovimiento {
+  INGRESO
+  GASTO
+}
+
+enum TipoCuenta {
+  EFECTIVO
+  BANCO
+  BILLETERA
+  TARJETA_CREDITO
+  TARJETA_DEBITO
+  OTRO
+}
+
+enum EstadoCuota {
+  PENDIENTE
+  PAGADA
+  VENCIDA
+}
+
+enum TipoNotificacion {
+  CUOTA_POR_VENCER
+  CUOTA_VENCIDA
+}
+
+enum AparienciaTema {
+  CLARO
+  OSCURO
+  SISTEMA
+}
+
+enum AparienciaColorPrincipal {
+  TEAL
+  SKY
+  INDIGO
+  EMERALD
+}

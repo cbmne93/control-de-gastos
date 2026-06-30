@@ -1,0 +1,16 @@
+services:
+  postgres-control-gastos:
+    image: postgres:17
+    container_name: postgres-control-gastos
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: control_gastos
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_control_gastos_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_control_gastos_data:

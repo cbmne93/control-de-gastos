@@ -1,36 +1,186 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Control de gastos
 
-## Getting Started
+Aplicación web para gestionar ingresos, gastos, cuentas, categorías, cuotas, vencimientos y notificaciones personales.
 
-First, run the development server:
+El objetivo del sistema es ayudar a llevar un control simple y ordenado del dinero disponible, los gastos pendientes y los compromisos en cuotas.
+
+## Tecnologías utilizadas
+
+- Next.js 16
+- React
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- NextAuth
+- Tailwind CSS
+- React Hook Form
+- Zod
+
+## Funcionalidades principales
+
+- Registro e inicio de sesión de usuarios.
+- Dashboard con resumen financiero.
+- Gestión de movimientos: ingresos y gastos.
+- Registro de gastos en cuotas.
+- Control de cuotas pendientes, pagadas y vencidas.
+- Gestión de cuentas.
+- Gestión de categorías.
+- Notificaciones internas por cuotas próximas a vencer.
+- Configuración de avisos de cuotas.
+- Cambio de apariencia y color principal.
+- Reportes básicos con exportación a Excel.
+
+## Requisitos
+
+- Node.js 20 o superior
+- PostgreSQL
+- npm
+
+## Instalación local
+
+Clonar el repositorio:
+
+```bash
+git clone URL_DEL_REPOSITORIO
+cd control-gastos
+```
+
+Instalar dependencias:
+
+```bash
+npm install
+```
+
+Crear archivo `.env` tomando como base `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+Configurar las variables de entorno:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE?schema=public"
+
+AUTH_URL="http://localhost:3000"
+AUTH_SECRET=""
+
+APP_TIME_ZONE="America/Asuncion"
+
+CRON_SECRET=""
+
+EMAIL_ENABLED="false"
+EMAIL_PROVIDER="console"
+EMAIL_FROM="Control de gastos <notificaciones@example.com>"
+```
+
+Ejecutar migraciones:
+
+```bash
+npx prisma migrate dev
+```
+
+Generar Prisma Client:
+
+```bash
+npx prisma generate
+```
+
+Levantar el proyecto:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abrir en el navegador:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```txt
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Comandos útiles
 
-## Learn More
+Ejecutar lint:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Compilar para producción:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run build
+```
 
-## Deploy on Vercel
+Procesar avisos de cuotas manualmente:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run cron:cuotas
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Producción
+
+Antes de publicar, verificar:
+
+```bash
+npm run lint
+npm run build
+```
+
+En producción se deben configurar las variables de entorno en el proveedor de hosting, por ejemplo Vercel.
+
+No subir el archivo `.env` al repositorio.
+
+Para aplicar migraciones en producción:
+
+```bash
+npx prisma migrate deploy
+```
+
+## Cron de cuotas
+
+El sistema incluye un proceso para generar avisos automáticos de cuotas próximas a vencer.
+
+La ruta protegida del cron es:
+
+```txt
+/api/cron/cuotas-vencimientos
+```
+
+El proceso también puede ejecutarse manualmente con:
+
+```bash
+npm run cron:cuotas
+```
+
+## Variables de entorno
+
+El archivo `.env.example` sirve como plantilla. El archivo `.env` real debe mantenerse privado.
+
+Variables principales:
+
+```env
+DATABASE_URL=""
+AUTH_URL=""
+AUTH_SECRET=""
+APP_TIME_ZONE="America/Asuncion"
+CRON_SECRET=""
+EMAIL_ENABLED="false"
+EMAIL_PROVIDER="console"
+EMAIL_FROM=""
+```
+
+## Estado del proyecto
+
+Proyecto en etapa funcional de prueba en producción.
+
+Módulos principales implementados:
+
+- Dashboard
+- Movimientos
+- Cuotas
+- Notificaciones
+- Categorías
+- Cuentas
+- Reportes
+- Configuración
