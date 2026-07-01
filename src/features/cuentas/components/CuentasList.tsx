@@ -95,7 +95,7 @@ export function CuentasList({ cuentas, pagination }: CuentasListProps) {
 
     return (
         <div className="space-y-4">
-            <div className="rounded-2xl border border-(--app-border) bg-(--app-card-soft) px-4 py-3">
+            <div className="hidden rounded-2xl border border-(--app-border) bg-(--app-card-soft) px-4 py-3 sm:block">
                 <p className="text-sm text-slate-500">
                     Mostrando{" "}
                     <span className="font-bold text-foreground">

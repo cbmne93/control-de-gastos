@@ -1,24 +1,33 @@
+import {
+    addDaysToDateOnly,
+    getTodayDateOnly,
+} from "@/lib/date/date-only";
+
 export function getMonthRange() {
-    const today = new Date();
+    const today = getTodayDateOnly();
 
     const startOfMonth = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        1,
-        0,
-        0,
-        0,
-        0
+        Date.UTC(
+            today.getUTCFullYear(),
+            today.getUTCMonth(),
+            1,
+            0,
+            0,
+            0,
+            0
+        )
     );
 
     const startOfNextMonth = new Date(
-        today.getFullYear(),
-        today.getMonth() + 1,
-        1,
-        0,
-        0,
-        0,
-        0
+        Date.UTC(
+            today.getUTCFullYear(),
+            today.getUTCMonth() + 1,
+            1,
+            0,
+            0,
+            0,
+            0
+        )
     );
 
     return {
@@ -28,22 +37,9 @@ export function getMonthRange() {
 }
 
 export function getTodayStart() {
-    const today = new Date();
-
-    return new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate(),
-        0,
-        0,
-        0,
-        0
-    );
+    return getTodayDateOnly();
 }
 
 export function addDays(date: Date, days: number) {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-
-    return result;
+    return addDaysToDateOnly(date, days);
 }

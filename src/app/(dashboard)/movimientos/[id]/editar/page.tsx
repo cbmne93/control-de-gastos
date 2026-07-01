@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, PencilLine } from "lucide-react";
 
 import { PageHeader } from "@/components/shared";
+import { toDateInputValue } from "@/lib/date/date-only";
 import { getMovimientoByIdAction } from "@/features/movimientos/actions/get-movimiento-by-id.action";
 import { getMovimientoFormOptions } from "@/features/movimientos/actions/get-movimiento-form-options.action";
 import { updateMovimientoAction } from "@/features/movimientos/actions/update-movimiento.action";
@@ -11,14 +12,6 @@ interface EditarMovimientoPageProps {
     params: Promise<{
         id: string;
     }>;
-}
-
-function formatDateForInput(date: Date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
 }
 
 function formatMontoForInput(value: number) {
@@ -39,25 +32,27 @@ export default async function EditarMovimientoPage({
 
     const updateMovimientoWithId = updateMovimientoAction.bind(
         null,
-        movimiento.id,
+        movimiento.id
     );
 
     return (
-        <div className="space-y-6">
-            <PageHeader
-                title="Editar movimiento"
-                description="Actualizá los datos del ingreso o gasto registrado."
-                icon={PencilLine}
-                action={
-                    <Link
-                        href="/movimientos"
-                        className="inline-flex items-center justify-center gap-2 rounded-xl border border-(--app-border) bg-(--app-card) px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-(--app-primary-muted) hover:bg-(--app-primary-soft) hover:text-(--app-primary)"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        Volver
-                    </Link>
-                }
-            />
+        <div className="space-y-4 sm:space-y-6">
+            <div className="hidden sm:block">
+                <PageHeader
+                    title="Editar movimiento"
+                    description="Actualizá los datos del ingreso o gasto registrado."
+                    icon={PencilLine}
+                    action={
+                        <Link
+                            href="/movimientos"
+                            className="inline-flex items-center justify-center gap-2 rounded-xl border border-(--app-border) bg-(--app-card) px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-(--app-primary-muted) hover:bg-(--app-primary-soft) hover:text-(--app-primary)"
+                        >
+                            <ArrowLeft className="h-4 w-4" />
+                            Volver
+                        </Link>
+                    }
+                />
+            </div>
 
             <MovimientoForm
                 action={updateMovimientoWithId}
@@ -68,7 +63,7 @@ export default async function EditarMovimientoPage({
                     tipo: movimiento.tipo,
                     descripcion: movimiento.descripcion,
                     monto: formatMontoForInput(movimiento.monto),
-                    fecha: formatDateForInput(movimiento.fecha),
+                    fecha: toDateInputValue(movimiento.fecha),
                     categoriaId: movimiento.categoriaId,
                     cuentaId: movimiento.cuentaId,
                     tieneCuotas: movimiento.tieneCuotas,
@@ -77,8 +72,8 @@ export default async function EditarMovimientoPage({
                         : "2",
                     fechaPrimerVencimiento:
                         movimiento.fechaPrimerVencimiento
-                            ? formatDateForInput(
-                                movimiento.fechaPrimerVencimiento,
+                            ? toDateInputValue(
+                                movimiento.fechaPrimerVencimiento
                             )
                             : "",
                 }}

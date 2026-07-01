@@ -111,7 +111,7 @@ export function MovimientosList({
                 <MovimientosEmptyState />
             ) : (
                 <>
-                    <div className="rounded-3xl border border-(--app-border) bg-(--app-card) px-5 py-4 shadow-sm">
+                    <div className="hidden rounded-3xl border border-(--app-border) bg-(--app-card) px-5 py-4 shadow-sm sm:block">
                         <p className="text-sm text-slate-500">
                             Mostrando{" "}
                             <span className="font-bold text-foreground">

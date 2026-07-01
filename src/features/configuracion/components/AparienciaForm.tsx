@@ -81,6 +81,11 @@ const colores: {
         },
     ];
 
+type VisibleMessage = {
+    ok: boolean;
+    message: string;
+};
+
 export function AparienciaForm({
     temaPreferido,
     colorPrincipal,
@@ -92,6 +97,9 @@ export function AparienciaForm({
 
     const [colorSeleccionado, setColorSeleccionado] =
         useState<ColorPrincipal>(colorPrincipal);
+
+    const [visibleMessage, setVisibleMessage] =
+        useState<VisibleMessage | null>(null);
 
     const [state, formAction, isPending] = useActionState(
         updateAparienciaAction,
@@ -105,6 +113,28 @@ export function AparienciaForm({
             router.refresh();
         }
     }, [state.ok, temaSeleccionado, colorSeleccionado, router]);
+
+    useEffect(() => {
+        if (!state.message) {
+            return;
+        }
+
+        const showTimeout = window.setTimeout(() => {
+            setVisibleMessage({
+                ok: state.ok,
+                message: state.message,
+            });
+        }, 0);
+
+        const hideTimeout = window.setTimeout(() => {
+            setVisibleMessage(null);
+        }, 3500);
+
+        return () => {
+            window.clearTimeout(showTimeout);
+            window.clearTimeout(hideTimeout);
+        };
+    }, [state.ok, state.message]);
 
     return (
         <form action={formAction} className="space-y-5">
@@ -141,8 +171,8 @@ export function AparienciaForm({
                                     setTemaSeleccionado(tema.value)
                                 }
                                 className={`rounded-2xl border p-4 text-left transition hover:border-(--app-primary-muted) ${isSelected
-                                    ? "border-(--app-primary) bg-(--app-primary-soft)"
-                                    : "border-(--app-border) bg-(--app-card-soft)"
+                                        ? "border-(--app-primary) bg-(--app-primary-soft)"
+                                        : "border-(--app-border) bg-(--app-card-soft)"
                                     }`}
                             >
                                 <div className="flex items-center justify-between gap-3">
@@ -152,8 +182,8 @@ export function AparienciaForm({
 
                                     <span
                                         className={`flex h-5 w-5 items-center justify-center rounded-full border-2 ${isSelected
-                                            ? "border-(--app-primary) bg-(--app-primary) text-white"
-                                            : "border-slate-300 bg-white"
+                                                ? "border-(--app-primary) bg-(--app-primary) text-white"
+                                                : "border-slate-300 bg-white"
                                             }`}
                                     >
                                         {isSelected ? (
@@ -199,8 +229,8 @@ export function AparienciaForm({
                                     setColorSeleccionado(color.value)
                                 }
                                 className={`rounded-2xl border p-4 text-left transition hover:border-(--app-primary-muted) ${isSelected
-                                    ? color.selectedClassName
-                                    : "border-(--app-border) bg-(--app-card-soft)"
+                                        ? color.selectedClassName
+                                        : "border-(--app-border) bg-(--app-card-soft)"
                                     }`}
                             >
                                 <div className="flex items-center justify-between gap-3">
@@ -234,14 +264,14 @@ export function AparienciaForm({
                 ) : null}
             </div>
 
-            {state.message ? (
+            {visibleMessage ? (
                 <p
-                    className={`rounded-2xl px-4 py-3 text-sm font-semibold ${state.ok
-                        ? "bg-emerald-50 text-emerald-700"
-                        : "bg-red-50 text-red-700"
+                    className={`rounded-2xl px-4 py-3 text-sm font-semibold ${visibleMessage.ok
+                            ? "bg-emerald-50 text-emerald-700"
+                            : "bg-red-50 text-red-700"
                         }`}
                 >
-                    {state.message}
+                    {visibleMessage.message}
                 </p>
             ) : null}
 
@@ -256,4 +286,4 @@ export function AparienciaForm({
             </div>
         </form>
     );
-}   
+}

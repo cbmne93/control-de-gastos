@@ -17,11 +17,21 @@ export function DismissibleUrlAlert({
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const [visible, setVisible] = useState(true);
+    const searchParamsString = searchParams.toString();
+
+    const [hiddenMessageKey, setHiddenMessageKey] = useState<string | null>(
+        null,
+    );
 
     const paramsKey = useMemo(() => {
         return paramsToRemove.join("|");
     }, [paramsToRemove]);
+
+    const messageKey = useMemo(() => {
+        return `${message}|${paramsKey}|${searchParamsString}`;
+    }, [message, paramsKey, searchParamsString]);
+
+    const isVisible = Boolean(message) && hiddenMessageKey !== messageKey;
 
     useEffect(() => {
         if (!message) {
@@ -29,19 +39,25 @@ export function DismissibleUrlAlert({
         }
 
         const timeout = window.setTimeout(() => {
-            setVisible(false);
+            setHiddenMessageKey(messageKey);
 
-            const params = new URLSearchParams(searchParams.toString());
+            const params = new URLSearchParams(searchParamsString);
 
-            paramsToRemove.forEach((param) => {
-                params.delete(param);
-            });
+            paramsKey
+                .split("|")
+                .filter(Boolean)
+                .forEach((param) => {
+                    params.delete(param);
+                });
 
             const queryString = params.toString();
 
-            router.replace(queryString ? `${pathname}?${queryString}` : pathname, {
-                scroll: false,
-            });
+            router.replace(
+                queryString ? `${pathname}?${queryString}` : pathname,
+                {
+                    scroll: false,
+                },
+            );
         }, duration);
 
         return () => {
@@ -50,14 +66,14 @@ export function DismissibleUrlAlert({
     }, [
         duration,
         message,
+        messageKey,
         paramsKey,
-        paramsToRemove,
         pathname,
         router,
-        searchParams,
+        searchParamsString,
     ]);
 
-    if (!visible) {
+    if (!isVisible) {
         return null;
     }
 

@@ -1,3 +1,7 @@
+import {
+    formatDateOnly,
+    formatDateTimePY,
+} from "@/lib/date/date-only";
 import type { TipoNotificacionValue } from "@/features/notificaciones/types/notificacion.types";
 
 export function getTipoNotificacionLabel(tipo: TipoNotificacionValue) {
@@ -19,19 +23,9 @@ export function getTipoNotificacionBadgeClass(tipo: TipoNotificacionValue) {
 }
 
 export function formatNotificacionFecha(date: Date) {
-    return new Intl.DateTimeFormat("es-PY", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-    }).format(date);
+    return formatDateTimePY(date);
 }
 
 export function formatFechaVencimiento(date: Date) {
-    return new Intl.DateTimeFormat("es-PY", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-    }).format(date);
+    return formatDateOnly(date);
 }

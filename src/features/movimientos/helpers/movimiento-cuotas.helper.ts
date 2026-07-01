@@ -1,14 +1,7 @@
+import { addMonthsToDateOnly } from "@/lib/date/date-only";
+
 export function addMonthsToDate(date: Date, months: number) {
-    const result = new Date(date);
-    const originalDay = result.getDate();
-
-    result.setMonth(result.getMonth() + months);
-
-    if (result.getDate() !== originalDay) {
-        result.setDate(0);
-    }
-
-    return result;
+    return addMonthsToDateOnly(date, months);
 }
 
 export function generarMontosCuotas(montoTotal: number, cantidadCuotas: number) {

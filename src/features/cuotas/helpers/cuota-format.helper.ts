@@ -1,3 +1,4 @@
+import { formatDateOnly } from "@/lib/date/date-only";
 import type { EstadoCuotaValue } from "@/features/cuotas/types/cuota.types";
 
 export function formatMontoPYG(value: number) {
@@ -9,11 +10,7 @@ export function formatMontoPYG(value: number) {
 }
 
 export function formatFechaCuota(date: Date) {
-    return new Intl.DateTimeFormat("es-PY", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-    }).format(date);
+    return formatDateOnly(date);
 }
 
 export function getEstadoCuotaLabel(estado: EstadoCuotaValue) {

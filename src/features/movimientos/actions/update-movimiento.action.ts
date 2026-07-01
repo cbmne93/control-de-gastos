@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma-client";
+import { parseDateInputAsDateOnly } from "@/lib/date/date-only";
 import {
     movimientoSchema,
     type MovimientoSchema,
@@ -43,13 +44,8 @@ export async function updateMovimientoAction(
             id,
             userId,
         },
-        include: {
-            cuotas: {
-                select: {
-                    id: true,
-                    estado: true,
-                },
-            },
+        select: {
+            id: true,
         },
     });
 
@@ -132,6 +128,33 @@ export async function updateMovimientoAction(
     const monto = parseMontoToNumber(data.monto);
     const tieneCuotas = data.tipo === "GASTO" && data.tieneCuotas;
 
+    if (tieneCuotas && !data.cantidadCuotas) {
+        return {
+            success: false,
+            errors: {
+                cantidadCuotas: [
+                    "La cantidad de cuotas es obligatoria cuando el gasto tiene cuotas.",
+                ],
+            },
+        };
+    }
+
+    if (tieneCuotas && !data.fechaPrimerVencimiento) {
+        return {
+            success: false,
+            errors: {
+                fechaPrimerVencimiento: [
+                    "La fecha del primer vencimiento es obligatoria cuando el gasto tiene cuotas.",
+                ],
+            },
+        };
+    }
+
+    const cantidadCuotasSegura = tieneCuotas ? Number(data.cantidadCuotas) : 0;
+    const fechaPrimerVencimientoSegura = tieneCuotas
+        ? parseDateInputAsDateOnly(data.fechaPrimerVencimiento!)
+        : null;
+
     await prisma.$transaction(async (tx) => {
         await tx.movimiento.update({
             where: {
@@ -141,7 +164,7 @@ export async function updateMovimientoAction(
                 tipo: data.tipo,
                 descripcion: data.descripcion,
                 monto,
-                fecha: new Date(`${data.fecha}T00:00:00`),
+                fecha: parseDateInputAsDateOnly(data.fecha),
                 categoriaId: data.categoriaId,
                 cuentaId: data.cuentaId,
                 tieneCuotas,
@@ -154,26 +177,21 @@ export async function updateMovimientoAction(
             },
         });
 
-        if (!tieneCuotas) {
+        if (!tieneCuotas || !fechaPrimerVencimientoSegura) {
             return;
         }
 
-        const cantidadCuotas = Number(data.cantidadCuotas);
-        const fechaPrimerVencimiento = new Date(
-            `${data.fechaPrimerVencimiento}T00:00:00`
-        );
-
-        const montos = generarMontosCuotas(monto, cantidadCuotas);
+        const montos = generarMontosCuotas(monto, cantidadCuotasSegura);
         const fechas = generarFechasVencimiento(
-            fechaPrimerVencimiento,
-            cantidadCuotas
+            fechaPrimerVencimientoSegura,
+            cantidadCuotasSegura
         );
 
         await tx.gastoCuota.createMany({
             data: montos.map((montoCuota, index) => ({
                 movimientoId: id,
                 numeroCuota: index + 1,
-                totalCuotas: cantidadCuotas,
+                totalCuotas: cantidadCuotasSegura,
                 monto: montoCuota,
                 fechaVencimiento: fechas[index],
                 estado: "PENDIENTE",

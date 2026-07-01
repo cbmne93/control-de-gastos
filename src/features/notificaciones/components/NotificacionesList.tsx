@@ -195,7 +195,7 @@ export function NotificacionesList({
     };
 
     return (
-        <div className="space-y-5">
+        <div className="space-y-4 sm:space-y-5">
             <NotificacionesFilters activeFilter={activeFilter} stats={stats} />
 
             {notificaciones.length === 0 ? (
@@ -214,13 +214,13 @@ export function NotificacionesList({
                 </div>
             ) : (
                 <>
-                    <div className="flex flex-col gap-3 rounded-3xl border border-(--app-border) bg-(--app-card) p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex flex-col gap-3 rounded-3xl border border-(--app-border) bg-(--app-card) p-4 shadow-sm sm:p-5 lg:flex-row lg:items-center lg:justify-between">
                         <div>
                             <h2 className="text-base font-bold text-foreground">
                                 Bandeja de notificaciones
                             </h2>
 
-                            <p className="text-sm text-slate-500">
+                            <p className="hidden text-sm text-slate-500 sm:block">
                                 Mostrando{" "}
                                 <span className="font-bold text-foreground">
                                     {notificaciones.length}
@@ -244,7 +244,7 @@ export function NotificacionesList({
                                 type="button"
                                 onClick={handleCleanDuplicates}
                                 disabled={isPending}
-                                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-(--app-border) bg-(--app-card) px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:border-(--app-primary-muted) hover:bg-(--app-primary-soft) hover:text-(--app-primary) disabled:cursor-not-allowed disabled:opacity-60"
+                                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-(--app-border) bg-(--app-card) px-3 text-sm font-bold text-slate-700 shadow-sm transition hover:border-(--app-primary-muted) hover:bg-(--app-primary-soft) hover:text-(--app-primary) disabled:cursor-not-allowed disabled:opacity-60 sm:h-11 sm:px-4"
                             >
                                 <Sparkles className="h-4 w-4" />
                                 Limpiar duplicadas
@@ -254,7 +254,7 @@ export function NotificacionesList({
                                 type="button"
                                 onClick={handleMarkAllAsRead}
                                 disabled={isPending || stats.sinLeer === 0}
-                                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-(--app-border) bg-(--app-card) px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:border-(--app-primary-muted) hover:bg-(--app-primary-soft) hover:text-(--app-primary) disabled:cursor-not-allowed disabled:opacity-60"
+                                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-(--app-border) bg-(--app-card) px-3 text-sm font-bold text-slate-700 shadow-sm transition hover:border-(--app-primary-muted) hover:bg-(--app-primary-soft) hover:text-(--app-primary) disabled:cursor-not-allowed disabled:opacity-60 sm:h-11 sm:px-4"
                             >
                                 <CheckCheck className="h-4 w-4" />
                                 Marcar todas como leídas
@@ -279,7 +279,7 @@ export function NotificacionesList({
                             <article
                                 key={notificacion.id}
                                 className={[
-                                    "rounded-3xl border p-5 shadow-sm transition",
+                                    "rounded-3xl border p-4 shadow-sm transition sm:p-5",
                                     notificacion.leida
                                         ? "border-(--app-border) bg-(--app-card)"
                                         : "border-(--app-primary-muted) bg-(--app-primary-soft)",
@@ -289,7 +289,7 @@ export function NotificacionesList({
                                     <div className="flex min-w-0 items-start gap-3">
                                         <div
                                             className={[
-                                                "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ring-1",
+                                                "flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl ring-1 sm:h-11 sm:w-11",
                                                 notificacion.tipo ===
                                                     "CUOTA_VENCIDA"
                                                     ? "bg-rose-50 text-rose-700 ring-rose-100"
@@ -319,17 +319,17 @@ export function NotificacionesList({
                                             <div className="mt-3 flex flex-wrap gap-2">
                                                 <span
                                                     className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-bold ${getTipoNotificacionBadgeClass(
-                                                        notificacion.tipo,
+                                                        notificacion.tipo
                                                     )}`}
                                                 >
                                                     {getTipoNotificacionLabel(
-                                                        notificacion.tipo,
+                                                        notificacion.tipo
                                                     )}
                                                 </span>
 
                                                 <span className="inline-flex rounded-full border border-(--app-border) bg-(--app-card) px-2.5 py-1 text-xs font-bold text-slate-600">
                                                     {formatNotificacionFecha(
-                                                        notificacion.createdAt,
+                                                        notificacion.createdAt
                                                     )}
                                                 </span>
 
@@ -338,7 +338,7 @@ export function NotificacionesList({
                                                         Vence:{" "}
                                                         {formatFechaVencimiento(
                                                             notificacion.cuota
-                                                                .fechaVencimiento,
+                                                                .fechaVencimiento
                                                         )}
                                                     </span>
                                                 ) : null}
@@ -382,7 +382,7 @@ export function NotificacionesList({
                                                 type="button"
                                                 onClick={() =>
                                                     handleMarkAsRead(
-                                                        notificacion.id,
+                                                        notificacion.id
                                                     )
                                                 }
                                                 disabled={isPending}
@@ -397,7 +397,7 @@ export function NotificacionesList({
                                             type="button"
                                             onClick={() =>
                                                 handleOpenDeleteDialog(
-                                                    notificacion,
+                                                    notificacion
                                                 )
                                             }
                                             disabled={isPending}

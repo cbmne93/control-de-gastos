@@ -1,3 +1,5 @@
+import { formatDateOnly } from "@/lib/date/date-only";
+
 export function formatDashboardMontoPYG(value: number) {
     return new Intl.NumberFormat("es-PY", {
         style: "currency",
@@ -7,9 +9,5 @@ export function formatDashboardMontoPYG(value: number) {
 }
 
 export function formatDashboardFecha(date: Date) {
-    return new Intl.DateTimeFormat("es-PY", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-    }).format(date);
+    return formatDateOnly(date);
 }

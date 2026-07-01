@@ -1,3 +1,5 @@
+import { formatDateOnly } from "@/lib/date/date-only";
+
 type MovimientoTipo = "INGRESO" | "GASTO";
 
 export function getMovimientoTipoLabel(tipo: MovimientoTipo) {
@@ -27,11 +29,7 @@ export function formatMontoPYG(value: number) {
 }
 
 export function formatFechaMovimiento(date: Date) {
-    return new Intl.DateTimeFormat("es-PY", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-    }).format(date);
+    return formatDateOnly(date);
 }
 
 export function parseMontoToNumber(value: string) {

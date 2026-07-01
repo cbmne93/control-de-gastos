@@ -1,30 +1,13 @@
 import { prisma } from "@/lib/prisma-client";
-
-function getTodayStart() {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    return today;
-}
-
-function addDays(date: Date, days: number) {
-    const result = new Date(date);
-    result.setDate(result.getDate() + days);
-
-    return result;
-}
-
-function formatFecha(date: Date) {
-    return new Intl.DateTimeFormat("es-PY", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-    }).format(date);
-}
+import {
+    addDaysToDateOnly,
+    formatDateOnly,
+    getTodayDateOnly,
+} from "@/lib/date/date-only";
 
 export async function syncNotificacionesCuotas(userId: string) {
-    const todayStart = getTodayStart();
-    const sevenDaysFromToday = addDays(todayStart, 7);
+    const todayStart = getTodayDateOnly();
+    const sevenDaysFromToday = addDaysToDateOnly(todayStart, 7);
 
     await prisma.gastoCuota.updateMany({
         where: {
@@ -133,7 +116,7 @@ export async function syncNotificacionesCuotas(userId: string) {
                 tipo: "CUOTA_VENCIDA" as const,
                 titulo: "Cuota vencida",
                 mensaje: `La cuota ${cuota.numeroCuota} de ${cuota.totalCuotas
-                    } de "${cuota.movimiento.descripcion}" venció el ${formatFecha(
+                    } de "${cuota.movimiento.descripcion}" venció el ${formatDateOnly(
                         cuota.fechaVencimiento
                     )}.`,
             })),
@@ -149,7 +132,7 @@ export async function syncNotificacionesCuotas(userId: string) {
                 tipo: "CUOTA_POR_VENCER" as const,
                 titulo: "Cuota próxima a vencer",
                 mensaje: `La cuota ${cuota.numeroCuota} de ${cuota.totalCuotas
-                    } de "${cuota.movimiento.descripcion}" vence el ${formatFecha(
+                    } de "${cuota.movimiento.descripcion}" vence el ${formatDateOnly(
                         cuota.fechaVencimiento
                     )}.`,
             })),
