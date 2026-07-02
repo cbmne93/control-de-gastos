@@ -1,3 +1,5 @@
+import { formatDateOnly } from "@/lib/date/date-only";
+
 export function formatReporteMontoPYG(value: number) {
     return new Intl.NumberFormat("es-PY", {
         style: "currency",
@@ -19,9 +21,5 @@ export function getReporteAmountClassName(value: number) {
 }
 
 export function formatReporteFecha(date: Date) {
-    return new Intl.DateTimeFormat("es-PY", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-    }).format(date);
+    return formatDateOnly(date);
 }

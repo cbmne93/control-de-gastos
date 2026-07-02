@@ -1,11 +1,12 @@
+import { getTodayDateOnly } from "@/lib/date/date-only";
 import type { ReportePeriodo } from "@/features/reportes/types/reporte.types";
 
 export function getCurrentPeriodo(): ReportePeriodo {
-    const today = new Date();
+    const today = getTodayDateOnly();
 
     return {
-        month: today.getMonth() + 1,
-        year: today.getFullYear(),
+        month: today.getUTCMonth() + 1,
+        year: today.getUTCFullYear(),
     };
 }
 
@@ -32,23 +33,11 @@ export function normalizeReportePeriodo(
 
 export function getReporteMonthRange(periodo: ReportePeriodo) {
     const startOfMonth = new Date(
-        periodo.year,
-        periodo.month - 1,
-        1,
-        0,
-        0,
-        0,
-        0
+        Date.UTC(periodo.year, periodo.month - 1, 1, 0, 0, 0, 0)
     );
 
     const startOfNextMonth = new Date(
-        periodo.year,
-        periodo.month,
-        1,
-        0,
-        0,
-        0,
-        0
+        Date.UTC(periodo.year, periodo.month, 1, 0, 0, 0, 0)
     );
 
     return {
@@ -58,16 +47,16 @@ export function getReporteMonthRange(periodo: ReportePeriodo) {
 }
 
 export function getMonthName(month: number) {
-    const date = new Date(2026, month - 1, 1);
+    const date = new Date(Date.UTC(2026, month - 1, 1, 0, 0, 0, 0));
 
     return new Intl.DateTimeFormat("es-PY", {
         month: "long",
+        timeZone: "UTC",
     }).format(date);
 }
 
 export function getReporteTitle(periodo: ReportePeriodo) {
     const monthName = getMonthName(periodo.month);
 
-    return `${monthName.charAt(0).toUpperCase()}${monthName.slice(1)} ${periodo.year
-        }`;
+    return `${monthName.charAt(0).toUpperCase()}${monthName.slice(1)} ${periodo.year}`;
 }

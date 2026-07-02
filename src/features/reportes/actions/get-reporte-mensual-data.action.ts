@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma-client";
+import { getTodayDateOnly } from "@/lib/date/date-only";
 import { getReporteMonthRange } from "@/features/reportes/helpers/reporte-date.helper";
 import type {
     ReporteDetalleItem,
@@ -63,9 +64,7 @@ export async function getReporteMensualData(
     periodo: ReportePeriodo
 ): Promise<ReporteMensualData> {
     const { startOfMonth, startOfNextMonth } = getReporteMonthRange(periodo);
-
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
+    const todayStart = getTodayDateOnly();
 
     await prisma.gastoCuota.updateMany({
         where: {

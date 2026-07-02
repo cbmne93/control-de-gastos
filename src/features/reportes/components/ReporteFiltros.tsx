@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FileSpreadsheet, Filter } from "lucide-react";
 
+import { getCurrentPeriodo } from "@/features/reportes/helpers/reporte-date.helper";
 import type { ReportePeriodo } from "@/features/reportes/types/reporte.types";
 
 interface ReporteFiltrosProps {
@@ -27,14 +28,14 @@ function getYearOptions(currentYear: number) {
 }
 
 export function ReporteFiltros({ periodo }: ReporteFiltrosProps) {
-    const currentYear = new Date().getFullYear();
-    const years = getYearOptions(currentYear);
+    const currentPeriodo = getCurrentPeriodo();
+    const years = getYearOptions(currentPeriodo.year);
     const exportHref = `/reportes/exportar-excel?month=${periodo.month}&year=${periodo.year}`;
 
     return (
         <form
             action="/reportes"
-            className="rounded-3xl border border-(--app-border) bg-(--app-card) p-5 shadow-sm"
+            className="rounded-3xl border border-(--app-border) bg-(--app-card) p-4 shadow-sm sm:p-5"
         >
             <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
                 <div className="flex items-center gap-3">
@@ -47,7 +48,7 @@ export function ReporteFiltros({ periodo }: ReporteFiltrosProps) {
                             Filtros del reporte
                         </h2>
 
-                        <p className="text-sm text-slate-500">
+                        <p className="hidden text-sm text-slate-500 sm:block">
                             Seleccioná el mes y año que querés analizar.
                         </p>
                     </div>

@@ -8,6 +8,7 @@ interface ProcesarAvisosCuotasJobResult {
     totalAvisosProcesados: number;
     totalNotificacionesCreadas: number;
     totalCorreosProcesados: number;
+    totalCorreosOmitidos: number;
     totalOmitidos: number;
     totalOmitidosPorDiaNoConfigurado: number;
     totalOmitidosPorAvisoYaEnviado: number;
@@ -242,6 +243,7 @@ export async function procesarAvisosCuotasJob(): Promise<ProcesarAvisosCuotasJob
         totalAvisosProcesados: 0,
         totalNotificacionesCreadas: 0,
         totalCorreosProcesados: 0,
+        totalCorreosOmitidos: 0,
         totalOmitidos: 0,
         totalOmitidosPorDiaNoConfigurado: 0,
         totalOmitidosPorAvisoYaEnviado: 0,
@@ -402,14 +404,18 @@ export async function procesarAvisosCuotasJob(): Promise<ProcesarAvisosCuotasJob
                     diasAntes,
                 });
 
-                await sendEmail({
+                const emailResult = await sendEmail({
                     to: user.email,
                     subject: emailContent.subject,
                     html: emailContent.html,
                     text: emailContent.text,
                 });
 
-                result.totalCorreosProcesados += 1;
+                if (emailResult.skipped) {
+                    result.totalCorreosOmitidos += 1;
+                } else {
+                    result.totalCorreosProcesados += 1;
+                }
             }
 
             await prisma.cuotaAviso.update({

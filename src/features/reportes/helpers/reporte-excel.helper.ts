@@ -1,5 +1,6 @@
 import * as ExcelJS from "exceljs";
 
+import { addDaysToDateOnly } from "@/lib/date/date-only";
 import { getReporteMonthRange } from "@/features/reportes/helpers/reporte-date.helper";
 import { formatReporteFecha } from "@/features/reportes/helpers/reporte-format.helper";
 import type {
@@ -9,11 +10,8 @@ import type {
 
 function getHastaPeriodo(data: ReporteMensualData) {
     const { startOfNextMonth } = getReporteMonthRange(data.periodo);
-    const hasta = new Date(startOfNextMonth);
 
-    hasta.setDate(hasta.getDate() - 1);
-
-    return hasta;
+    return addDaysToDateOnly(startOfNextMonth, -1);
 }
 
 function getOrigenLabel(item: ReporteDetalleItem) {

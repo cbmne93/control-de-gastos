@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { type ReactNode } from "react";
 
 import { auth } from "@/auth";
+import { SessionTimeoutWatcher } from "@/components/auth/SessionTimeoutWatcher";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { getNotificacionesNoLeidasCountAction } from "@/features/notificaciones/actions";
 import { prisma } from "@/lib/prisma-client";
@@ -44,6 +45,7 @@ export default async function DashboardLayout({
             userEmail={user.email}
             notificacionesNoLeidas={notificacionesNoLeidas}
         >
+            <SessionTimeoutWatcher />
             {children}
         </AppLayout>
     );
